@@ -2,22 +2,22 @@ require 'spec_helper'
 
 describe 'Xdelivery::Client' do
   before do
-    @merchant_no = "QN009000001"
-    @access_key = "5794bfd9664166ebd31aeaca857bf853"
+    @merchant_no = "NN064000001"
+    @access_key = "e965b2ff48b5aa7b4a7e61b62d2b4103"
 
-    @api = Xdelivery::Client.new(@merchant_no, @access_key)
+    @client = Xdelivery::Client.new(@merchant_no, @access_key)
   end
 
   it "#merchant_no" do
-    assert_equal @merchant_no, @api.merchant_no
+    assert_equal @merchant_no, @client.merchant_no
   end
 
   it "#access_key" do
-    assert_equal @access_key, @api.access_key
+    assert_equal @access_key, @client.access_key
   end
 
   # it "#create_orders!" do
-  #   @response = @api.create_orders! do |orders|
+  #   @response = @client.create_orders! do |orders|
   #     params = {
   #       order_id: "SP19049",
   #       provider: "FAMI",
@@ -36,6 +36,9 @@ describe 'Xdelivery::Client' do
   #     orders.add(params)
   #   end
   #   assert_equal "SP19049", @response.orders[0].order_id
-  #   assert_equal "F00000001111", @response.orders[0].ship_no
+  # end
+
+  # it "test" do
+  #   assert_equal true, @client.ping! 
   # end
 end

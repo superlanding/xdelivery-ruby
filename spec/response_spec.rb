@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe 'Xdelivery::Response' do
+describe 'Xdelivery::API::Response' do
 
   describe "當訂單送出成功時 ..." do
     before do
       @data = "{\"status\":true,\"orders\":[{\"ship_no\":\"F00000001111\",\"order_id\":\"SP19049\"}]}"
 
-      @response = Xdelivery::Response.new(@data)
+      @response = Xdelivery::API::Response.new(@data)
     end
 
     it "#status? == true" do
@@ -23,7 +23,7 @@ describe 'Xdelivery::Response' do
     before do
       @data = "{\"status\":false,\"orders\":[{\"order_id\":\"SP19049\",\"valid\":false,\"errors\":[\"錯誤一\",\"錯誤二\"]},{\"order_id\":\"SP19049\",\"valid\":true}]}"
 
-      @response = Xdelivery::Response.new(@data)
+      @response = Xdelivery::API::Response.new(@data)
     end
 
     it "#status? == false" do

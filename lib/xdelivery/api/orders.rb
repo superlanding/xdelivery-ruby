@@ -3,7 +3,7 @@ module Xdelivery
     class Orders < Base
       include Enumerable
 
-      attr_accessor :orders, :merchant_no, :access_key
+      attr_accessor :orders
 
       COLUMNS = [
         :order_id, :provider, :recipient, :mobile, :email, :store_id, :store_name, :address,
@@ -30,7 +30,8 @@ module Xdelivery
       end
 
       def create!
-        post('/orders/batch', params)
+        data = post('/orders/batch', params)
+        Response.new(data)
       end
 
       protected

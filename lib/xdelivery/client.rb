@@ -9,9 +9,14 @@ module Xdelivery
     end
 
     def create_orders!
-      orders = API::Orders.new(merchant_no, access_key)
-      yield(orders)
-      orders.create!
+      api = API::Orders.new(merchant_no, access_key)
+      yield(api)
+      api.create!
+    end
+
+    def ping!
+      api = API::Ping.new(merchant_no, access_key)
+      api.ping!
     end
   end
 end

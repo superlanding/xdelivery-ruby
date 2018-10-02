@@ -1,8 +1,10 @@
 require 'uri'
 require 'rest-client'
+
 module Xdelivery
   module API
     class Base
+      attr_accessor :merchant_no, :access_key
 
       BASE_URL = 'https://api.xdelivery.io'
 
@@ -17,7 +19,14 @@ module Xdelivery
         uri = URI.parse("#{BASE_URL}#{cmd}")
         uri.query = URI.encode_www_form(auth_params)
         response = RestClient.post(uri.to_s, params)
-        Xdelivery::Response.new(response.body)
+        response.body
+      end
+
+      def get(cmd, params={})
+        uri = URI.parse("#{BASE_URL}#{cmd}")
+        uri.query = URI.encode_www_form(auth_params.merge(params))
+        response = RestClient.get(uri.to_s, params)
+        response.body
       end
 
       def auth_params
