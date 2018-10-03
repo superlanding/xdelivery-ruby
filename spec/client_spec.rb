@@ -37,6 +37,9 @@ describe 'Xdelivery::Client' do
   #         total_order_amount: 1560,
   #         cash_on_delivery: true,
   #         order_created_at: "2018-04-12 15:23:31",
+  #         note: "Helloworld",
+  #         callback_url: "https://www.yahoo.com.tw",
+  #         ref_id: 22345
   #       }
   #       orders.add(params)
   #     end

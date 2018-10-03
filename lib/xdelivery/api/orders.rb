@@ -7,7 +7,8 @@ module Xdelivery
 
       COLUMNS = [
         :order_id, :provider, :recipient, :mobile, :email, :store_id, :store_name, :address,
-        :items, :warehouse_items, :total_order_amount, :cash_on_delivery, :order_created_at
+        :items, :warehouse_items, :total_order_amount, :cash_on_delivery, :order_created_at,
+        :note, :callback_url, :ref_id
       ]
 
       def add(params)
