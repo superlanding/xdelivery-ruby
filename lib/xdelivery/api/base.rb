@@ -15,18 +15,36 @@ module Xdelivery
 
       protected
 
-      def post(cmd, params)
-        uri = URI.parse("#{BASE_URL}#{cmd}")
-        uri.query = URI.encode_www_form(auth_params)
-        response = RestClient.post(uri.to_s, params)
-        response.body
+      def post(path)
+        RestClient.post(uri(path).to_s, post_data)
+      rescue RestClient::ExceptionWithResponse => e
+        e.response
       end
 
-      def get(cmd, params={})
-        uri = URI.parse("#{BASE_URL}#{cmd}")
-        uri.query = URI.encode_www_form(auth_params.merge(params))
-        response = RestClient.get(uri.to_s, params)
-        response.body
+      def get(path)
+        RestClient.get(uri(path).to_s)
+      rescue RestClient::ExceptionWithResponse => e
+        e.response
+      end
+
+      # [GET] query string params
+      def params
+        {}
+      end
+
+      # [POST] 
+      def post_data
+        {}
+      end
+
+      private
+
+      def uri(path)
+        uri = URI.parse("#{BASE_URL}#{path}").tap { |u| u.query = query_auth_params }
+      end
+
+      def query_auth_params
+        URI.encode_www_form(auth_params.merge(params))
       end
 
       def auth_params

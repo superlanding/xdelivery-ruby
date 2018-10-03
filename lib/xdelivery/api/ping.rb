@@ -1,10 +1,8 @@
 module Xdelivery
   module API
     class Ping < Base
-
       def ping!
-        data = JSON.parse(get('/'))
-        data['status'] == true
+        Response::Ping.new(get('/'))
       end
     end
   end
