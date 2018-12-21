@@ -14,6 +14,12 @@ module Xdelivery
       api.create!
     end
 
+    def update_products!
+      api = API::Products.new(merchant_no, access_key)
+      yield(api)
+      api.update!
+    end
+
     def ping!
       api = API::Ping.new(merchant_no, access_key)
       api.ping!

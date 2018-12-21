@@ -27,7 +27,7 @@ module Xdelivery
       end
 
       def create!
-        response = post('/orders/batch')
+        response = post('/orders/batch.json')
         Response::Orders.new(response)
       end
 

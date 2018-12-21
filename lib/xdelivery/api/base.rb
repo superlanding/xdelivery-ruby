@@ -15,6 +15,12 @@ module Xdelivery
 
       protected
 
+      def patch(path)
+        RestClient.patch(uri(path).to_s, patch_data)
+      rescue RestClient::ExceptionWithResponse => e
+        e.response
+      end
+
       def post(path)
         RestClient.post(uri(path).to_s, post_data)
       rescue RestClient::ExceptionWithResponse => e
@@ -32,8 +38,13 @@ module Xdelivery
         {}
       end
 
-      # [POST] 
+      # [POST]
       def post_data
+        {}
+      end
+
+      # [PATCH]
+      def patch_data
         {}
       end
 

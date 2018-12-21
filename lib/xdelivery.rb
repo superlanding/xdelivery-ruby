@@ -4,9 +4,11 @@ require "xdelivery/version"
 require "xdelivery/client"
 require "xdelivery/api/base"
 require "xdelivery/api/orders"
+require "xdelivery/api/products"
 require "xdelivery/api/ping"
 require "xdelivery/api/response/base"
 require "xdelivery/api/response/orders"
+require "xdelivery/api/response/products"
 require "xdelivery/api/response/ping"
 
 
