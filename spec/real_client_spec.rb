@@ -64,7 +64,7 @@ describe 'Xdelivery::Client (真實測試)' do
       with_development! do
         @response = @client.create_orders! do |orders|
           invoice_params = {
-            invoice_type: "device",
+            create_type: "device",
             device: "email",
             email: "eddie.li.624@gmail.com"
           }
@@ -79,7 +79,7 @@ describe 'Xdelivery::Client (真實測試)' do
       with_development! do
         @response = @client.create_orders! do |orders|
           invoice_params = {
-            invoice_type: "device",
+            create_type: "device",
             device: "email",
             email: ""
           }
@@ -97,7 +97,7 @@ describe 'Xdelivery::Client (真實測試)' do
       with_development! do
         @response = @client.create_orders! do |orders|
           invoice_params = {
-            invoice_type: 'device',
+            create_type: 'device',
             device: 'barcode',
             device_id: "/1+-.567"
           }
@@ -112,7 +112,7 @@ describe 'Xdelivery::Client (真實測試)' do
       with_development! do
         @response = @client.create_orders! do |orders|
           invoice_params = {
-            invoice_type: 'device',
+            create_type: 'device',
             device: 'barcode',
             device_id: "12345"
           }
@@ -130,7 +130,7 @@ describe 'Xdelivery::Client (真實測試)' do
       with_development! do
         @response = @client.create_orders! do |orders|
           invoice_params = {
-            invoice_type: 'device',
+            create_type: 'device',
             device: 'personal_id',
             device_id: "ab12345678987654"
           }
@@ -145,7 +145,7 @@ describe 'Xdelivery::Client (真實測試)' do
       with_development! do
         @response = @client.create_orders! do |orders|
           invoice_params = {
-            invoice_type: 'device',
+            create_type: 'device',
             device: 'personal_id',
             device_id: "12345678987654"
           }
