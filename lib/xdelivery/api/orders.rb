@@ -11,9 +11,21 @@ module Xdelivery
         :note, :callback_url, :ref_id, :tag
       ]
 
-      def add(params)
+      INVOICE_COLUMNS = [
+        :invoice_type, :email, :company_code, :donate_code, :device_id, :device
+      ]
+
+      def add(params, invoice_params={})
         self.orders ||= []
-        params.delete_if { |k, v| COLUMNS.include?(k) == false }
+        (params || {}).delete_if do |k, v|
+          COLUMNS.include?(k) == false
+        end
+        invoice_params.delete_if do |k, v|
+          INVOICE_COLUMNS.include?(k) == false
+        end
+
+        params.merge!(invoice: invoice_params) unless invoice_params.empty?
+
         orders.push(params)
         params
       end
