@@ -66,7 +66,8 @@ describe 'Xdelivery::Client (真實測試)' do
           invoice_params = {
             create_type: "device",
             device: "email",
-            email: "eddie.li.624@gmail.com"
+            email: "eddie.li.624@gmail.com",
+            items: [ { title: "商品A", qty: 10, price: 1000, unit: "個" } ]
           }
           orders.add(@order_params, invoice_params)
         end
@@ -99,7 +100,8 @@ describe 'Xdelivery::Client (真實測試)' do
           invoice_params = {
             create_type: 'device',
             device: 'barcode',
-            device_id: "/1+-.567"
+            device_id: "/1+-.567",
+            items: [ { title: "商品A", qty: 10, price: 1000, unit: "個" } ]
           }
           orders.add(@order_params, invoice_params)
         end
@@ -132,7 +134,8 @@ describe 'Xdelivery::Client (真實測試)' do
           invoice_params = {
             create_type: 'device',
             device: 'personal_id',
-            device_id: "ab12345678987654"
+            device_id: "ab12345678987654",
+            items: [ { title: "商品A", qty: 10, price: 1000, unit: "個" } ]
           }
           orders.add(@order_params, invoice_params)
         end
@@ -157,6 +160,37 @@ describe 'Xdelivery::Client (真實測試)' do
       assert_equal "SP19049", @response.orders[0].order_id
       assert_equal "22345", @response.orders[0].ref_id
       assert_equal '自然人憑證格式錯誤', @response.orders[0].errors['invoice_device_id']
+    end
+
+    it "FAILD 拋送訂單 (沒有發票品項錯誤)" do
+      with_development! do
+        @response = @client.create_orders! do |orders|
+          invoice_params = { items: [{}] }
+          orders.add(@order_params, invoice_params)
+        end
+      end
+      assert_equal false, @response.orders[0].valid?
+      assert_equal false, @response.status?
+      assert_equal '不能為空白', @response.orders[0].errors['invoice_items']
+    end
+
+    it "FAILD 拋送訂單 (沒有發票品項錯誤)" do
+      with_development! do
+        @response = @client.create_orders! do |orders|
+          invoice_params = {
+            items: [
+              { title: "" }
+            ]
+          }
+          orders.add(@order_params, invoice_params)
+        end
+      end
+      assert_equal false, @response.orders[0].valid?
+      assert_equal false, @response.status?
+      assert_equal '不能為空白', @response.orders[0].errors['invoice_items[0][title]']
+      assert_equal '必須大於 0', @response.orders[0].errors['invoice_items[0][qty]']
+      assert_equal '必須大於 0', @response.orders[0].errors['invoice_items[0][price]']
+      assert_equal '不能為空白', @response.orders[0].errors['invoice_items[0][unit]']
     end
   end
 
