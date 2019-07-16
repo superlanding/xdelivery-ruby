@@ -26,6 +26,10 @@ module Xdelivery
       api.update!
     end
 
+    def get_invoice_settings!
+      API::InvoiceSettings.new(merchant_no, access_key).get!
+    end
+
     def ping!
       api = API::Ping.new(merchant_no, access_key)
       api.ping!

@@ -12,7 +12,7 @@ module Xdelivery
       ]
 
       INVOICE_COLUMNS = [
-        :create_type, :email, :company_code, :donate_code, :device_id, :device, :items
+        :create_type, :email, :company_code, :donate_code, :device_id, :device, :items, :invoice_setting_id
       ]
 
       def add(params, invoice_params={})

@@ -13,6 +13,18 @@ describe 'Xdelivery::Client (真實測試)' do
     @client = Xdelivery::Client.new(@merchant_no, @access_key)
   end
 
+  it "#get_invoice_settings!" do
+    with_development! do
+      @response = @client.get_invoice_settings!
+      assert_equal true, @response.status?
+      assert_equal true, @response.auth?
+      assert_equal 2, @response.settings.count
+      assert_equal 1, @response.settings[0].id
+      assert_equal '李焰的敗家日記', @response.settings[0].title
+      assert_equal true, @response.settings[0].default_setting
+    end
+  end
+
   it "#update_products!" do
     with_development! do
       @response = @client.update_products! do |products|
@@ -60,14 +72,15 @@ describe 'Xdelivery::Client (真實測試)' do
       assert_equal "SP19049", @response.orders[0].order_id
     end
 
-    it "OK 拋送訂單 (發票: Email)" do
+    it "OK 拋送訂單 (發票: Email) (指定 invoice setting)" do
       with_development! do
         @response = @client.create_orders! do |orders|
           invoice_params = {
             create_type: "device",
             device: "email",
             email: "eddie.li.624@gmail.com",
-            items: [ { title: "商品A", qty: 10, price: 1000, unit: "個" } ]
+            items: [ { title: "商品A", qty: 10, price: 1000, unit: "個" } ],
+            invoice_setting_id: 2
           }
           orders.add(@order_params, invoice_params)
         end
@@ -82,7 +95,8 @@ describe 'Xdelivery::Client (真實測試)' do
           invoice_params = {
             create_type: "device",
             device: "email",
-            email: ""
+            email: "",
+            invoice_setting_id: 3
           }
           orders.add(@order_params, invoice_params)
         end
@@ -93,6 +107,7 @@ describe 'Xdelivery::Client (真實測試)' do
       assert_equal "22345", @response.orders[0].ref_id
       assert_equal '不能為空白', @response.orders[0].errors['invoice_email']
       assert_equal '不能為空白', @response.orders[0].errors['invoice_items']
+      assert_equal '找不到此發票設定', @response.orders[0].errors['invoice_invoice_setting_id']
     end
 
     it "OK 拋送訂單 (發票: 手機條碼)" do
