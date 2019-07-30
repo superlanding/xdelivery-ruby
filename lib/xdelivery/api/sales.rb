@@ -8,7 +8,7 @@ module Xdelivery
       COLUMNS = [
         :order_id, :recipient, :mobile, :email, :address,
         :items, :warehouse_items, :total_order_amount, :cash_on_delivery, :order_created_at,
-        :note, :callback_url, :ref_id, :tag, :tracking_code
+        :note, :callback_url, :ref_id, :tag, :tracking_code, :merchant_note
       ]
 
       INVOICE_COLUMNS = [
