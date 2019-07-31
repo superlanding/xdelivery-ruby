@@ -1,6 +1,7 @@
 require 'json'
 require 'rest-client'
 require "xdelivery/version"
+require "xdelivery/callback"
 require "xdelivery/client"
 require "xdelivery/api/base"
 require "xdelivery/api/orders"

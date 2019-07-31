@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    xdelivery (0.2.0)
+    xdelivery (0.2.3)
       rest-client
 
 GEM
