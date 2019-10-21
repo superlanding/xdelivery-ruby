@@ -8,12 +8,12 @@ require "xdelivery/api/orders"
 require "xdelivery/api/sales"
 require "xdelivery/api/products"
 require "xdelivery/api/ping"
-require "xdelivery/api/invoice_settings"
+require "xdelivery/api/shops"
 require "xdelivery/api/response/base"
 require "xdelivery/api/response/orders"
 require "xdelivery/api/response/products"
 require "xdelivery/api/response/ping"
-require "xdelivery/api/response/invoice_settings"
+require "xdelivery/api/response/shops"
 
 
 module Xdelivery
