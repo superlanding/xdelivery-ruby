@@ -17,6 +17,34 @@ require "xdelivery/api/response/shops"
 
 
 module Xdelivery
+
+  @@open_timeout = 5
+  @@read_timeout = 5
+
+  def self.open_timeout
+    @@open_timeout
+  end
+
+  def self.open_timeout=(timeout)
+    @@open_timeout = timeout
+  end
+
+  def self.read_timeout
+    @@read_timeout
+  end
+
+  def self.read_timeout=(timeout)
+    @@read_timeout = timeout
+  end
+
+  # Xdelivery.configure do |config|
+  #   config.open_timeout = 5
+  #   config.read_timeout = 5
+  # end
+  def self.configure
+    yield(self)
+  end
+
   def url
     API::Base::BASE_URL
   end

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    xdelivery (1.0.0)
+    xdelivery (1.0.1)
       rest-client
 
 GEM
@@ -50,4 +50,4 @@ DEPENDENCIES
   xdelivery!
 
 BUNDLED WITH
-   1.16.6
+   1.17.3

@@ -16,21 +16,29 @@ module Xdelivery
       protected
 
       def patch(path)
-        RestClient.patch(uri(path).to_s, patch_data)
+        RestClient::Request.execute(method: :patch, url: uri(path).to_s, payload: patch_data, open_timeout: open_timeout, read_timeout: read_timeout)
       rescue RestClient::ExceptionWithResponse => e
         e.response
       end
 
       def post(path)
-        RestClient.post(uri(path).to_s, post_data)
+        RestClient::Request.execute(method: :post, url: uri(path).to_s, payload: post_data, open_timeout: open_timeout, read_timeout: read_timeout)
       rescue RestClient::ExceptionWithResponse => e
         e.response
       end
 
       def get(path)
-        RestClient.get(uri(path).to_s)
+        RestClient::Request.execute(method: :get, url: uri(path).to_s, open_timeout: open_timeout, read_timeout: read_timeout)
       rescue RestClient::ExceptionWithResponse => e
         e.response
+      end
+
+      def open_timeout
+        Xdelivery.open_timeout
+      end
+
+      def read_timeout
+        Xdelivery.read_timeout
       end
 
       # [GET] query string params
