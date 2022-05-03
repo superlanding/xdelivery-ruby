@@ -6,11 +6,19 @@ module Xdelivery
 
         def initialize(response)
           self.response = response
-          self.data = JSON.parse(response.body)
+          self.data = begin
+            JSON.parse(response.body)
+          rescue JSON::ParserError
+            { 'status' => false }
+          end
+        end
+
+        def code
+          response.code
         end
 
         def auth?
-          response.code == 200
+          code == 200
         end
 
         def status?

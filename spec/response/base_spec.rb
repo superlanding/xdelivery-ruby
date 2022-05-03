@@ -44,4 +44,45 @@ describe 'Xdelivery::API::Response::Base' do
       assert @response.status?
     end
   end
+
+  describe "當回傳不明 500.html 時..." do
+    before do
+      @body = <<-HTML
+        <html>
+          <head>
+            <title>We're sorry, but something went wrong (500)</title>
+            <meta name="viewport" content="width=device-width,initial-scale=1">
+          </head>
+          <body class="rails-default-error-page">
+            <!-- This file lives in public/500.html -->
+            <div class="dialog">
+              <div>
+                <h1>We're sorry, but something went wrong.</h1>
+              </div>
+              <p>If you are the application owner check the logs for more information.</p>
+            </div>
+          </body>
+        </html>
+      HTML
+      stub_request(:any, Xdelivery::API::Base::BASE_URL).to_return(body: @body, status: 500)
+      @http_response = begin
+        RestClient.get(Xdelivery::API::Base::BASE_URL)
+      rescue RestClient::ExceptionWithResponse => e
+        e.response
+      end
+      @response = Xdelivery::API::Response::Orders.new(@http_response)
+    end
+
+    it 'should #code == 500' do
+      assert_equal 500, @response.code
+    end
+
+    it "#auth? == false" do
+      assert_equal false, @response.auth?
+    end
+
+    it '#status? == false' do
+      assert_equal false, @response.status?
+    end
+  end
 end
