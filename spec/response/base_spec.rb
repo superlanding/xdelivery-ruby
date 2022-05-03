@@ -70,19 +70,13 @@ describe 'Xdelivery::API::Response::Base' do
       rescue RestClient::ExceptionWithResponse => e
         e.response
       end
-      @response = Xdelivery::API::Response::Orders.new(@http_response)
     end
 
-    it 'should #code == 500' do
-      assert_equal 500, @response.code
-    end
-
-    it "#auth? == false" do
-      assert_equal false, @response.auth?
-    end
-
-    it '#status? == false' do
-      assert_equal false, @response.status?
+    it 'shoud raise Xdelivery::InternalServerError' do
+      e = assert_raises(Xdelivery::InternalServerError) do
+        @response = Xdelivery::API::Response::Orders.new(@http_response)
+      end
+      assert_equal('500, Internal Server Error', e.message)
     end
   end
 end
