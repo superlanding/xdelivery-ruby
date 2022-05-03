@@ -79,4 +79,41 @@ describe 'Xdelivery::API::Response::Base' do
       assert_equal('500, Internal Server Error', e.message)
     end
   end
+
+  describe "當回傳不明 404.html 時..." do
+    before do
+      @body = <<-HTML
+      <html>
+        <head>
+          <title>The page you were looking for doesn't exist (404)</title>
+          <meta name="viewport" content="width=device-width,initial-scale=1">
+        </head>
+
+        <body class="rails-default-error-page">
+          <!-- This file lives in public/404.html -->
+          <div class="dialog">
+            <div>
+              <h1>The page you were looking for doesn't exist.</h1>
+              <p>You may have mistyped the address or the page may have moved.</p>
+            </div>
+            <p>If you are the application owner check the logs for more information.</p>
+          </div>
+        </body>
+      </html>
+      HTML
+      stub_request(:any, Xdelivery::API::Base::BASE_URL).to_return(body: @body, status: 404)
+      @http_response = begin
+        RestClient.get(Xdelivery::API::Base::BASE_URL)
+      rescue RestClient::ExceptionWithResponse => e
+        e.response
+      end
+    end
+
+    it 'shoud raise Xdelivery::NotFound' do
+      e = assert_raises(Xdelivery::NotFound) do
+        @response = Xdelivery::API::Response::Orders.new(@http_response)
+      end
+      assert_equal('404, Not Found', e.message)
+    end
+  end
 end

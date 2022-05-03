@@ -13,7 +13,8 @@ module Xdelivery
   }
 
   EXCEPTION_STATUSES = {
-    500 => 'Internal Server Error'
+    404 => 'Not Found',
+    500 => 'Internal Server Error',
   }
 
   EXCEPTION_STATUSES.each_pair do |code, message|
