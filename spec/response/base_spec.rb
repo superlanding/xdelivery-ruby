@@ -66,7 +66,7 @@ describe 'Xdelivery::API::Response::Base' do
     end
   end
 
-  describe "當回傳不明 500.html 時..." do
+  describe "當回傳不明時 (404, 500, 502, 503, 504)..." do
     before do
       @body = <<-HTML
         <!DOCTYPE html>
@@ -89,45 +89,32 @@ describe 'Xdelivery::API::Response::Base' do
       @http_response = fake_resp(body: @body, status: 500)
     end
 
-    it 'shoud raise Xdelivery::Client::InternalServerError' do
+    it 'shoud raise Xdelivery::Client::InternalServerError, when status code = 500' do
       e = assert_raises(Xdelivery::Client::InternalServerError) {
-        Xdelivery::API::Response::Orders.new(@http_response)
+        Xdelivery::API::Response::Orders.new(fake_resp(body: @body, status: 500))
       }
       assert_equal('500, Internal Server Error', e.message)
     end
-  end
 
-  describe "當回傳不明 404.html 時..." do
-    before do
-      @body = <<-HTML
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <title>The page you were looking for doesn't exist (404)</title>
-        <meta name="viewport" content="width=device-width,initial-scale=1">
-      </head>
-
-      <body class="rails-default-error-page">
-        <!-- This file lives in public/404.html -->
-        <div class="dialog">
-          <div>
-            <h1>The page you were looking for doesn't exist.</h1>
-            <p>You may have mistyped the address or the page may have moved.</p>
-          </div>
-          <p>If you are the application owner check the logs for more information.</p>
-        </div>
-      </body>
-      </html>
-      HTML
-
-      @http_response = fake_resp(body: @body, status: 404)
+    it 'shoud raise Xdelivery::Client::InternalServerError, when status code = 502' do
+      e = assert_raises(Xdelivery::Client::BadGateway) {
+        Xdelivery::API::Response::Orders.new(fake_resp(body: @body, status: 502))
+      }
+      assert_equal('502, Bad Gateway', e.message)
     end
 
-    it 'shoud raise Xdelivery::Client::NotFound' do
-      e = assert_raises(Xdelivery::Client::NotFound) {
-        Xdelivery::API::Response::Orders.new(@http_response)
+    it 'shoud raise Xdelivery::Client::InternalServerError, when status code = 503' do
+      e = assert_raises(Xdelivery::Client::ServiceUnavailable) {
+        Xdelivery::API::Response::Orders.new(fake_resp(body: @body, status: 503))
       }
-      assert_equal('404, Not Found', e.message)
+      assert_equal('503, Service Unavailable', e.message)
+    end
+
+    it 'shoud raise Xdelivery::Client::InternalServerError, when status code = 504' do
+      e = assert_raises(Xdelivery::Client::GatewayTimeout) {
+        Xdelivery::API::Response::Orders.new(fake_resp(body: @body, status: 504))
+      }
+      assert_equal('504, Gateway Timeout', e.message)
     end
   end
 end
