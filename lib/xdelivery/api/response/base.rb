@@ -7,7 +7,12 @@ module Xdelivery
         def initialize(response)
           self.response = response
           handle_error!
-          self.data = JSON.parse(response.body)
+
+          self.data = begin
+            JSON.parse(response.body)
+          rescue JSON::ParserError
+            raise Client::UnknownResponse, "#{code}, Response is not json."
+          end
         end
 
         def code
@@ -25,13 +30,12 @@ module Xdelivery
         protected
 
         def handle_error!
-          exception = Xdelivery::EXCEPTION_STATUSES[code]
-          if Xdelivery::EXCEPTION_STATUSES[code]
-            raise Xdelivery::Exceptions::EXCEPTIONS_MAP[code]
+          if Client::EXCEPTION_STATUSES[code]
+            raise Exceptions::EXCEPTIONS_MAP[code]
           end
 
-          unless Xdelivery::EXPECTED_STATUSES[code]
-            raise Xdelivery::UnknownError
+          unless Client::EXPECTED_STATUSES[code]
+            raise Client::UnknownResponse, "Unexpected response status code: #{code}."
           end
         end
       end
