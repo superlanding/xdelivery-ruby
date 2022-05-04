@@ -3,6 +3,7 @@ require 'rest-client'
 require "xdelivery/version"
 require "xdelivery/callback"
 require "xdelivery/client"
+require "xdelivery/exceptions"
 require "xdelivery/api/base"
 require "xdelivery/api/orders"
 require "xdelivery/api/sales"
