@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    xdelivery (1.0.1)
+    xdelivery (2.0.0)
       rest-client
 
 GEM
@@ -41,7 +41,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bundler (~> 1.16)
+  bundler (~> 2.3.14)
   minitest (~> 5.0)
   minitest-stub-const
   rake (~> 10.0)
@@ -50,4 +50,4 @@ DEPENDENCIES
   xdelivery!
 
 BUNDLED WITH
-   1.17.3
+   2.3.14

@@ -22,6 +22,8 @@ module Xdelivery
   @@open_timeout = 5
   @@read_timeout = 5
 
+  @@env = :production
+
   def self.open_timeout
     @@open_timeout
   end
@@ -46,7 +48,11 @@ module Xdelivery
     yield(self)
   end
 
-  def url
-    API::Base::BASE_URL
+  def self.production?
+    @@env.to_s == "production"
+  end
+
+  def self.test?
+    @@env.to_s == "test"
   end
 end

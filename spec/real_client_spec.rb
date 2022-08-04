@@ -4,7 +4,7 @@ describe 'Xdelivery::Client (真實測試)' do
 
   # def with_development!(&block)
   #   WebMock.allow_net_connect!
-  #   Xdelivery::API::Base.stub_const(:BASE_URL, "http://api.xdelivery.test", &block)
+  #   Xdelivery::API::Base.stub_any_instance(:base_url, "http://api.xdelivery.test", &block)
   # end
 
   # before do

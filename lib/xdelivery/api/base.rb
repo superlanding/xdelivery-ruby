@@ -6,11 +6,20 @@ module Xdelivery
     class Base
       attr_accessor :merchant_no, :access_key
 
-      BASE_URL = 'https://api.xdelivery.io'
+      PRODUCTION_BASE_URL = 'https://api.xdelivery.io'
+      TEST_BASE_URL = 'https://api.staging.xdelivery.io'
 
       def initialize(merchant_no='', access_key='')
         self.merchant_no = merchant_no
         self.access_key = access_key
+      end
+
+      def base_url
+        @base_url = if ::Xdelivery.production?
+          PRODUCTION_BASE_URL
+        else
+          TEST_BASE_URL
+        end
       end
 
       protected
@@ -59,7 +68,7 @@ module Xdelivery
       private
 
       def uri(path)
-        uri = URI.parse("#{BASE_URL}#{path}").tap { |u| u.query = query_auth_params }
+        uri = URI.parse("#{base_url}#{path}").tap { |u| u.query = query_auth_params }
       end
 
       def query_auth_params

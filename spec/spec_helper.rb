@@ -10,9 +10,10 @@ module Minitest
   class Test
 
     def fake_resp(*args)
-      stub_request(:any, Xdelivery::API::Base::BASE_URL).to_return(*args)
+      stub_request(:any, Xdelivery::API::Base::PRODUCTION_BASE_URL).to_return(*args)
+
       begin
-        RestClient.get(Xdelivery::API::Base::BASE_URL)
+        RestClient.get(Xdelivery::API::Base::PRODUCTION_BASE_URL)
       rescue RestClient::ExceptionWithResponse => e
         e.response
       end
