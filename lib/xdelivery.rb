@@ -24,6 +24,14 @@ module Xdelivery
 
   @@env = :production
 
+  def self.env(env)
+    @@env
+  end
+
+  def self.env=(env)
+    @@env = env
+  end
+
   def self.open_timeout
     @@open_timeout
   end
