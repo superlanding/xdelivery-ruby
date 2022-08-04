@@ -24,7 +24,7 @@ module Xdelivery
 
   @@env = :production
 
-  def self.env(env)
+  def self.env
     @@env
   end
 
