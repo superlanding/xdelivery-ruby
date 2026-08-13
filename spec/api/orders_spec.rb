@@ -35,4 +35,25 @@ describe 'Xdelivery::API::Orders' do
     assert_equal 'FAMI', @orders[0][:provider]
     assert_equal 'Eddie', @orders[0][:recipient]
   end
+
+  describe "#history_id" do
+    it "沒有設定時 post_data 不帶 history_id" do
+      assert_equal false, @orders.send(:post_data)[:import].key?(:history_id)
+    end
+
+    it "設定成 nil 時 post_data 不帶 history_id" do
+      @orders.history_id = nil
+      assert_equal false, @orders.send(:post_data)[:import].key?(:history_id)
+    end
+
+    it "有設定時 post_data 帶著 history_id" do
+      @orders.history_id = 5566
+      assert_equal 5566, @orders.send(:post_data)[:import][:history_id]
+    end
+
+    it "orders 不受影響" do
+      @orders.history_id = 5566
+      assert_equal [@params], @orders.send(:post_data)[:import][:orders]
+    end
+  end
 end

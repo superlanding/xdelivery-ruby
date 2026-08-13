@@ -3,7 +3,8 @@ module Xdelivery
     class Orders < Base
       include Enumerable
 
-      attr_accessor :orders
+      # history_id: 掛進火箭快遞既有匯入紀錄的 id，nil 則由對方新建一筆
+      attr_accessor :orders, :history_id
 
       COLUMNS = [
         :order_id, :provider, :recipient, :mobile, :email, :store_id, :store_name, :address,
@@ -46,7 +47,9 @@ module Xdelivery
       protected
 
       def post_data
-        { import: { orders: orders } }
+        import = { orders: orders }
+        import[:history_id] = history_id if history_id
+        { import: import }
       end
     end
   end
