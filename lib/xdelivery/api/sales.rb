@@ -48,7 +48,9 @@ module Xdelivery
 
       def post_data
         import = { orders: sales }
-        import[:history_id] = history_id if history_id
+        # 空字串（例如表單沒填的欄位）跟 nil 一樣視為「不掛既有紀錄」，
+        # 送出去只會讓對方拿到一個無效的 id
+        import[:history_id] = history_id unless history_id.to_s.strip.empty?
         { import: import }
       end
     end

@@ -46,9 +46,24 @@ describe 'Xdelivery::API::Orders' do
       assert_equal false, @orders.send(:post_data)[:import].key?(:history_id)
     end
 
+    it "設定成空字串時 post_data 不帶 history_id" do
+      @orders.history_id = ""
+      assert_equal false, @orders.send(:post_data)[:import].key?(:history_id)
+    end
+
+    it "設定成空白字串時 post_data 不帶 history_id" do
+      @orders.history_id = "  "
+      assert_equal false, @orders.send(:post_data)[:import].key?(:history_id)
+    end
+
     it "有設定時 post_data 帶著 history_id" do
       @orders.history_id = 5566
       assert_equal 5566, @orders.send(:post_data)[:import][:history_id]
+    end
+
+    it "設定成字串 id 時 post_data 原樣帶著 history_id" do
+      @orders.history_id = "5566"
+      assert_equal "5566", @orders.send(:post_data)[:import][:history_id]
     end
 
     it "orders 不受影響" do
