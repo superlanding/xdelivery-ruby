@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     xdelivery (2.1.0)
-      rest-client
+      rest-client (>= 2.0)
 
 GEM
   remote: https://rubygems.org/

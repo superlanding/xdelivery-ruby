@@ -76,6 +76,16 @@ module Xdelivery
         {}
       end
 
+      # 空字串／只有空白（例如表單沒填的欄位）跟 nil 一樣視為「不掛既有紀錄」，
+      # 送出去只會讓對方拿到一個無效的 id。有值的字串則去掉前後空白才送，
+      # 不然貼上來的 " 5566 " 會被序列化成 import[history_id]=+5566+
+      def history_id_payload(history_id)
+        id = history_id.respond_to?(:strip) ? history_id.strip : history_id
+        return {} if id.to_s.empty?
+
+        { history_id: id }
+      end
+
       private
 
       def uri(path)

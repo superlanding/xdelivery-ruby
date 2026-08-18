@@ -32,6 +32,22 @@ describe 'Xdelivery::Client' do
       @client.create_orders! { |api| api_history_id = api.history_id }
       assert_nil api_history_id
     end
+
+    it "history_id 會出現在送出去的 payload 裡" do
+      @client.create_orders!(history_id: " 5566 ") { |api| api.add(order_id: "SP19049") }
+
+      assert_requested(:post, /xdelivery/) do |req|
+        req.body.include?("import[history_id]=5566")
+      end
+    end
+
+    it "沒帶 history_id 時 payload 不含 history_id" do
+      @client.create_orders! { |api| api.add(order_id: "SP19049") }
+
+      assert_requested(:post, /xdelivery/) do |req|
+        req.body.include?("history_id") == false
+      end
+    end
   end
 
   describe "#create_sales!" do
@@ -49,6 +65,22 @@ describe 'Xdelivery::Client' do
       api_history_id = :not_set
       @client.create_sales! { |api| api_history_id = api.history_id }
       assert_nil api_history_id
+    end
+
+    it "history_id 會出現在送出去的 payload 裡" do
+      @client.create_sales!(history_id: " 5566 ") { |api| api.add(order_id: "SP19049") }
+
+      assert_requested(:post, /xdelivery/) do |req|
+        req.body.include?("import[history_id]=5566")
+      end
+    end
+
+    it "沒帶 history_id 時 payload 不含 history_id" do
+      @client.create_sales! { |api| api.add(order_id: "SP19049") }
+
+      assert_requested(:post, /xdelivery/) do |req|
+        req.body.include?("history_id") == false
+      end
     end
   end
 end

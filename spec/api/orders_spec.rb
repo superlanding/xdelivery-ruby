@@ -66,6 +66,12 @@ describe 'Xdelivery::API::Orders' do
       assert_equal "5566", @orders.send(:post_data)[:import][:history_id]
     end
 
+    it "設定成前後有空白的字串 id 時 post_data 去掉空白" do
+      # 表單 padding／貼上來的欄位，原樣送出會變成 import[history_id]=+5566+
+      @orders.history_id = " 5566 "
+      assert_equal "5566", @orders.send(:post_data)[:import][:history_id]
+    end
+
     it "orders 不受影響" do
       @orders.history_id = 5566
       assert_equal [@params], @orders.send(:post_data)[:import][:orders]
