@@ -8,14 +8,18 @@ module Xdelivery
       self.access_key = access_key
     end
 
-    def create_orders!
+    # history_id 帶值時，這批訂單會掛進火箭快遞既有的匯入紀錄，
+    # 讓多次呼叫在對方後台合併成同一筆 history
+    def create_orders!(history_id: nil)
       api = API::Orders.new(merchant_no, access_key)
+      api.history_id = history_id
       yield(api)
       api.create!
     end
 
-    def create_sales!
+    def create_sales!(history_id: nil)
       api = API::Sales.new(merchant_no, access_key)
+      api.history_id = history_id
       yield(api)
       api.create!
     end
