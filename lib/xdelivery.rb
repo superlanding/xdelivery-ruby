@@ -1,4 +1,5 @@
 require 'json'
+require 'ostruct'
 require 'rest-client'
 require "xdelivery/version"
 require "xdelivery/callback"
