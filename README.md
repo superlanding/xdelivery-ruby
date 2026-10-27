@@ -3,17 +3,17 @@
 [![Gem Version](https://badge.fury.io/rb/xdelivery.svg)](https://rubygems.org/gems/xdelivery)
 [![Tests](https://github.com/superlanding/xdelivery-ruby/actions/workflows/test.yml/badge.svg)](https://github.com/superlanding/xdelivery-ruby/actions/workflows/test.yml)
 
-Ruby client for the **XDelivery (火箭快遞)** merchant API: push orders and sales in batches, optionally with an invoice, update product stock figures, list shops, ping the API and verify the callbacks XDelivery sends back to you.
+**XDelivery（火箭快遞）** 商家 API 的 Ruby client：可批次拋送訂單與銷貨（可附發票）、更新商品庫存數據、列出商店、ping API，以及驗證 XDelivery 回呼（callback）給你的請求。
 
-> The gem is published on RubyGems as **`xdelivery`** (the repository and gemspec file are named `xdelivery-ruby`); the Ruby namespace is `Xdelivery`.
+> 這個 gem 在 RubyGems 上的名稱是 **`xdelivery`**（repo 與 gemspec 檔名為 `xdelivery-ruby`）；Ruby 的 namespace 是 `Xdelivery`。
 
-## Requirements
+## 環境需求
 
-- Ruby `>= 2.7` (gemspec). CI runs on Ruby **3.1, 3.3 and 3.4** (see [`.github/workflows/test.yml`](.github/workflows/test.yml)).
-- No Rails dependency. Runtime dependencies: `rest-client >= 2.0` and `ostruct`.
-- A merchant number (`merchant_no`) and access key (`access_key`) issued by XDelivery.
+- Ruby `>= 2.7`（gemspec）。CI 會跑 Ruby **3.1、3.3 與 3.4**（見 [`.github/workflows/test.yml`](.github/workflows/test.yml)）。
+- 不依賴 Rails。Runtime 相依套件：`rest-client >= 2.0` 與 `ostruct`。
+- 由 XDelivery 核發的商家編號（`merchant_no`）與存取金鑰（`access_key`）。
 
-## Installation
+## 安裝
 
 ```ruby
 # Gemfile
@@ -24,38 +24,38 @@ gem "xdelivery"
 bundle install
 ```
 
-Or `gem install xdelivery`, then `require "xdelivery"`.
+或執行 `gem install xdelivery`，再 `require "xdelivery"`。
 
-## Configuration
+## 設定
 
-All settings are optional; the defaults are shown.
+所有設定都是選填的，下面列出的是預設值。
 
 ```ruby
 # config/initializers/xdelivery.rb
 Xdelivery.configure do |config|
-  config.open_timeout = 5      # seconds to open the connection
-  config.read_timeout = 5      # seconds to wait for the response
+  config.open_timeout = 5      # 建立連線的等待秒數
+  config.read_timeout = 5      # 等待回應的秒數
 end
 
-Xdelivery.env = :production    # anything other than :production talks to the staging API
+Xdelivery.env = :production    # 除了 :production 之外，其他值都會連到 staging API
 ```
 
-| Environment | Base URL |
+| 環境 | Base URL |
 |-------------|----------|
-| `:production` (default) | `https://api.xdelivery.io` |
-| any other value, e.g. `:test` | `https://api.staging.xdelivery.io` |
+| `:production`（預設） | `https://api.xdelivery.io` |
+| 其他任何值，例如 `:test` | `https://api.staging.xdelivery.io` |
 
-## Usage
+## 使用方式
 
-Create a client with your credentials. Every API method is a bang method on the client and returns a response object.
+用你的憑證建立 client。每個 API 方法都是 client 上的 bang 方法，並回傳一個 response 物件。
 
 ```ruby
 client = Xdelivery::Client.new("YOUR_MERCHANT_NO", "YOUR_ACCESS_KEY")
 ```
 
-### Create orders
+### 建立訂單
 
-`create_orders!` yields a builder; call `add(order_params, invoice_params = {})` for each order, and the batch is sent when the block returns.
+`create_orders!` 會 yield 一個 builder；每筆訂單呼叫一次 `add(order_params, invoice_params = {})`，block 結束時會把整批送出。
 
 ```ruby
 response = client.create_orders! do |orders|
@@ -78,37 +78,37 @@ response = client.create_orders! do |orders|
       callback_url: "https://example.com/xdelivery/callback",
       ref_id: 22345
     },
-    # optional invoice
+    # 選填：發票
     { create_type: "device", device: "email", email: "buyer@example.com", items: [] }
   )
 end
 
-response.status?              # => true when the API accepted the request
-response.auth?                # => false when the credentials were rejected (HTTP 401)
-response.history_id           # => import history id on XDelivery's side (nil on failure)
+response.status?              # => API 接受這次請求時為 true
+response.auth?                # => 憑證被拒絕（HTTP 401）時為 false
+response.history_id           # => XDelivery 那邊的匯入紀錄 id（失敗時為 nil）
 response.orders.each do |order|
   order.order_id
-  order.valid?                # false when order.errors is not empty
+  order.valid?                # order.errors 不是空的時候為 false
   order.errors                # => []
 end
 ```
 
-Allowed order keys: `order_id provider recipient mobile email store_id store_name address items warehouse_items total_order_amount cash_on_delivery order_created_at note callback_url ref_id tag merchant_note shop_id`.
-Allowed invoice keys: `create_type email company_code company_title donate_code device_id device items`.
-**Any other key is silently dropped** by `add`.
+訂單允許的 key：`order_id provider recipient mobile email store_id store_name address items warehouse_items total_order_amount cash_on_delivery order_created_at note callback_url ref_id tag merchant_note shop_id`。
+發票允許的 key：`create_type email company_code company_title donate_code device_id device items`。
+**其他的 key 會被 `add` 默默丟掉**，不會報錯。
 
-#### Attach to an existing import history (`history_id`)
+#### 附加到既有的匯入紀錄（`history_id`）
 
-Pass `history_id:` to put several calls into the same import history on XDelivery's backend. A blank value (`nil`, `""`, whitespace) is ignored, and surrounding whitespace is stripped.
+傳入 `history_id:`，就能讓多次呼叫歸在 XDelivery 後台的同一筆匯入紀錄。空白的值（`nil`、`""`、只有空白字元）會被忽略，前後的空白也會被去除。
 
 ```ruby
 first  = client.create_orders! { |orders| orders.add(order_a) }
 second = client.create_orders!(history_id: first.history_id) { |orders| orders.add(order_b) }
 ```
 
-### Create sales
+### 建立銷貨
 
-Same shape as orders, for sales batches; the builder is `Xdelivery::API::Sales`, `history_id:` is supported, and the response is also a `Response::Orders`.
+格式與訂單相同，用於銷貨批次；builder 是 `Xdelivery::API::Sales`，同樣支援 `history_id:`，回傳的也是 `Response::Orders`。
 
 ```ruby
 response = client.create_sales! do |sales|
@@ -116,9 +116,9 @@ response = client.create_sales! do |sales|
 end
 ```
 
-Allowed sale keys: `order_id recipient mobile email address items warehouse_items total_order_amount cash_on_delivery order_created_at note callback_url ref_id tag tracking_code merchant_note shop_id` (invoice keys as for orders).
+銷貨允許的 key：`order_id recipient mobile email address items warehouse_items total_order_amount cash_on_delivery order_created_at note callback_url ref_id tag tracking_code merchant_note shop_id`（發票的 key 與訂單相同）。
 
-### Update products
+### 更新商品
 
 ```ruby
 response = client.update_products! do |products|
@@ -127,9 +127,9 @@ end
 response.status?
 ```
 
-Allowed keys: `days_produce qty_day_average qty_week_average qty_month_average qty_owe` (others are dropped).
+允許的 key：`days_produce qty_day_average qty_week_average qty_month_average qty_owe`（其他的會被丟掉）。
 
-### Shops and ping
+### 商店與 ping
 
 ```ruby
 shops = client.get_shops!
@@ -139,27 +139,27 @@ shops.shops.each { |shop| [shop.id, shop.title, shop.pay2go_merchant_id, shop.de
 client.ping!.status?
 ```
 
-### Verify a callback
+### 驗證 callback
 
-XDelivery calls the `callback_url` you gave on an order. `Xdelivery::Callback` checks the signature (`check_code`, a SHA-256 over the sorted parameters plus your merchant number and access key):
+XDelivery 會呼叫你在訂單上填的 `callback_url`。`Xdelivery::Callback` 負責檢查簽章（`check_code`，是以排序後的參數加上你的商家編號與存取金鑰所算出的 SHA-256）：
 
 ```ruby
-# e.g. in a Rails controller (params is the callback request's params)
+# 例如在 Rails controller 裡（params 是 callback 請求的 params）
 callback = Xdelivery::Callback.new(merchant_no, access_key, params.to_unsafe_h.symbolize_keys)
 
 if callback.valid?
-  callback.action       # e.g. "delivered"
-  callback.title        # e.g. "消費者取貨"
+  callback.action       # 例如 "delivered"
+  callback.title        # 例如 "消費者取貨"
   callback.desc
-  callback.provider     # e.g. "fami"
-  callback.created_at   # Time (Time.zone.parse when ActiveSupport's Time.zone is available)
-                          # outside Rails, `require "time"` yourself first (the gem only calls Time.parse)
+  callback.provider     # 例如 "fami"
+  callback.created_at   # Time（有 ActiveSupport 的 Time.zone 時會用 Time.zone.parse）
+                          # 在 Rails 以外的環境，請自行先 `require "time"`（這個 gem 只會呼叫 Time.parse）
 end
 ```
 
-### Error handling
+### 錯誤處理
 
-The response object raises when the HTTP status is not `200` or `401`:
+當 HTTP status 不是 `200` 或 `401` 時，response 物件會 raise：
 
 | HTTP status | Exception |
 |-------------|-----------|
@@ -168,47 +168,47 @@ The response object raises when the HTTP status is not `200` or `401`:
 | 502 | `Xdelivery::Client::BadGateway` |
 | 503 | `Xdelivery::Client::ServiceUnavailable` |
 | 504 | `Xdelivery::Client::GatewayTimeout` |
-| any other status, or a body that is not JSON | `Xdelivery::Client::UnknownResponse` |
+| 其他任何 status，或 body 不是 JSON | `Xdelivery::Client::UnknownResponse` |
 
-Network timeouts are **not** wrapped: `RestClient::Exceptions::OpenTimeout` / `ReadTimeout` are raised as-is, so rescue them yourself:
+網路逾時**不會**被包裝：`RestClient::Exceptions::OpenTimeout` / `ReadTimeout` 會原樣 raise，請自行 rescue：
 
 ```ruby
 begin
   client.create_orders! { |orders| orders.add(order) }
 rescue Xdelivery::Client::ServiceUnavailable, RestClient::Exceptions::Timeout
-  # retry later
+  # 稍後重試
 end
 ```
 
-A `401` is not an exception: check `response.auth?`.
+`401` 不會 raise exception：請檢查 `response.auth?`。
 
-## Development
+## 開發
 
 ```bash
 git clone https://github.com/superlanding/xdelivery-ruby.git
 cd xdelivery-ruby
 bin/setup
-bundle exec rake t       # runs spec/**/*_spec.rb with Minitest + WebMock (the default rake task does too)
+bundle exec rake t       # 以 Minitest + WebMock 執行 spec/**/*_spec.rb（預設的 rake task 也一樣）
 bin/console
 ```
 
-The specs stub HTTP with WebMock; `spec/real_client_spec.rb` (calls against a real server) is commented out.
+spec 以 WebMock 模擬 HTTP；`spec/real_client_spec.rb`（對真實伺服器發請求）目前被註解掉了。
 
-## Releasing
+## 發版
 
-Releases are automated with RubyGems [Trusted Publishing](https://guides.rubygems.org/trusted-publishing/) (no API key in the repo):
+發版透過 RubyGems [Trusted Publishing](https://guides.rubygems.org/trusted-publishing/) 自動完成（repo 內不存放 API key）：
 
-1. In your PR, bump `Xdelivery::VERSION` in `lib/xdelivery/version.rb` ([Semantic Versioning](https://semver.org/)).
-2. Add a matching `## [x.y.z] - YYYY-MM-DD` section to `CHANGELOG.md`.
-3. A human reviews and merges the PR into `master` (AI accounts can only open PRs).
-4. [`.github/workflows/publish.yml`](.github/workflows/publish.yml) runs on `master`: when the gemspec version is not on rubygems.org yet it runs `rake release` (tags `vX.Y.Z` and publishes). A merge without a version bump publishes nothing.
+1. 在你的 PR 裡修改 `lib/xdelivery/version.rb` 的 `Xdelivery::VERSION`（遵循 [Semantic Versioning](https://semver.org/lang/zh-TW/)）。
+2. 在 `CHANGELOG.md` 新增對應的 `## [x.y.z] - YYYY-MM-DD` 區塊。
+3. 由真人 review 後合併進 `master`（AI 帳號只能開 PR）。
+4. [`.github/workflows/publish.yml`](.github/workflows/publish.yml) 會在 `master` 上執行：當 gemspec 的版本還沒上 rubygems.org 時，就執行 `rake release`（打 `vX.Y.Z` tag 並發佈）。沒有跳版號的合併不會發佈任何東西。
 
-Docs/CI-only PRs do not need a version bump. See [CLAUDE.md](CLAUDE.md): every PR must also update `README.md` (when behavior or usage changes) and add an entry to `CHANGELOG.md`.
+只改文件 / CI 的 PR 不需要跳版號。請見 [CLAUDE.md](CLAUDE.md)：每個 PR 也都必須更新 `README.md`（行為或用法有變時）並在 `CHANGELOG.md` 新增一筆條目。
 
-## Contributing
+## 貢獻
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/superlanding/xdelivery-ruby.
+歡迎到 GitHub 回報問題與提交 pull request：https://github.com/superlanding/xdelivery-ruby。
 
-## License
+## 授權
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+本 gem 以 [MIT License](https://opensource.org/licenses/MIT) 條款開源。

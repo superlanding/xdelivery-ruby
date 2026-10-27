@@ -1,153 +1,156 @@
-# Changelog
+# 更新紀錄（Changelog）
 
-All notable changes to this project are documented in this file.
+本檔記錄此專案所有值得注意的變更。
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+格式參考 [Keep a Changelog](https://keepachangelog.com/zh-TW/1.1.0/)，版本號遵循 [Semantic Versioning](https://semver.org/lang/zh-TW/)。
 
 ## [Unreleased]
 
 ### Added
 
-- `CHANGELOG.md`.
-- Full `README.md`: overview, requirements, installation, configuration, usage of every API, error handling, development and release flow.
-- CLAUDE.md rule: every PR must also update `README.md` and `CHANGELOG.md`.
+- 新增 `CHANGELOG.md`。
+- 完整的 `README.md`：概述、環境需求、安裝、設定、每支 API 的用法、錯誤處理、開發與發版流程。
+- CLAUDE.md 規則：每個 PR 都必須同步更新 `README.md` 與 `CHANGELOG.md`；`README.md` 與 `CHANGELOG.md` 一律用繁體中文撰寫。
+
+### Changed
+
+- `README.md`、`CHANGELOG.md` 改以繁體中文（zh-TW）撰寫。
 
 ## [2.1.0] - 2026-10-27
 
 ### Added
 
-- `history_id:` option for `Client#create_orders!` and `Client#create_sales!`: attach a batch to an existing import history on the XDelivery side, so several calls merge into one history. A blank (`nil`, `""`, whitespace) value is treated as absent and surrounding whitespace is stripped.
-- `Response::Orders#history_id` (the history the batch was attached to; `nil` on a failed response).
-- Support for Ruby 3.3 and 3.4: `required_ruby_version >= 2.7`, explicit `ostruct` dependency and require.
-- GitHub Actions test matrix (Ruby 3.1.7, 3.3.12, 3.4.11) and `publish.yml` (RubyGems Trusted Publishing).
-- CLAUDE.md release rules.
+- `Client#create_orders!` 與 `Client#create_sales!` 新增 `history_id:` 選項：把一批資料附加到 XDelivery 端既有的匯入紀錄，讓多次呼叫合併成同一筆紀錄。空白的值（`nil`、`""`、只有空白字元）視為未提供，前後的空白會被去除。
+- `Response::Orders#history_id`（該批資料所附加的匯入紀錄；response 失敗時為 `nil`）。
+- 支援 Ruby 3.3 與 3.4：`required_ruby_version >= 2.7`，並明確相依與 require `ostruct`。
+- GitHub Actions 測試矩陣（Ruby 3.1.7、3.3.12、3.4.11）與 `publish.yml`（RubyGems Trusted Publishing）。
+- CLAUDE.md 加入發版規則。
 
 ### Changed
 
-- The `rest-client` dependency now requires `>= 2.0` (needed for `RestClient::Exceptions::Timeout`).
-- `Rakefile` default task is now `t`.
+- `rest-client` 相依版本改為 `>= 2.0`（`RestClient::Exceptions::Timeout` 需要）。
+- `Rakefile` 的預設 task 改為 `t`。
 
 ### Fixed
 
-- Request timeouts (`RestClient::Exceptions::Timeout`) used to be swallowed and surfaced as a confusing `NoMethodError` (`nil.code`). They are now raised as-is.
+- 請求逾時（`RestClient::Exceptions::Timeout`）以前會被吞掉，變成令人困惑的 `NoMethodError`（`nil.code`）。現在會原樣 raise。
 
 ## [2.0.3] - 2022-08-04
 
 ### Fixed
 
-- Release fixes after 2.0.0 (2.0.2 was never published to RubyGems).
+- 修正 2.0.0 之後的發版問題（2.0.2 從未發佈到 RubyGems）。
 
 ## [2.0.1] - 2022-08-04
 
 ### Fixed
 
-- Release fixes after 2.0.0 (version bump only).
+- 修正 2.0.0 之後的發版問題（只有跳版號）。
 
 ## [2.0.0] - 2022-08-04
 
 ### Added
 
-- `Xdelivery.env` / `Xdelivery.env=` and `Xdelivery.production?` / `Xdelivery.test?`. In any environment other than `production` requests go to the staging API (`https://api.staging.xdelivery.io`).
-- `API::Base#base_url`, `PRODUCTION_BASE_URL` and `TEST_BASE_URL`.
+- 新增 `Xdelivery.env` / `Xdelivery.env=` 與 `Xdelivery.production?` / `Xdelivery.test?`。在 `production` 以外的任何環境，請求都會送到 staging API（`https://api.staging.xdelivery.io`）。
+- 新增 `API::Base#base_url`、`PRODUCTION_BASE_URL` 與 `TEST_BASE_URL`。
 
 ### Removed
 
-- `API::Base::BASE_URL` (replaced by the two constants above).
+- 移除 `API::Base::BASE_URL`（由上述兩個常數取代）。
 
 ## [1.0.2] - 2022-05-04
 
 ### Added
 
-- Error handling for HTTP error responses: `Client::NotFound` (404), `Client::InternalServerError` (500), `Client::BadGateway` (502), `Client::ServiceUnavailable` (503), `Client::GatewayTimeout` (504) and `Client::UnknownResponse` (non-JSON or unexpected status).
+- HTTP 錯誤回應的處理：`Client::NotFound`（404）、`Client::InternalServerError`（500）、`Client::BadGateway`（502）、`Client::ServiceUnavailable`（503）、`Client::GatewayTimeout`（504）與 `Client::UnknownResponse`（非 JSON 或非預期的 status）。
 
 ## [1.0.1] - 2020-04-22
 
 ### Added
 
-- `Xdelivery.open_timeout`, `Xdelivery.read_timeout` and `Xdelivery.configure`.
+- 新增 `Xdelivery.open_timeout`、`Xdelivery.read_timeout` 與 `Xdelivery.configure`。
 
 ## [1.0.0] - 2019-10-21
 
 ### Added
 
-- Shops API: `Client#get_shops!`, and the `shop_id` order / sale column.
+- 商店 API：`Client#get_shops!`，以及訂單 / 銷貨的 `shop_id` 欄位。
 
 ### Removed
 
-- Invoice settings API (`Client#get_invoice_settings!`, `API::InvoiceSettings`) and the `invoice_setting_id` invoice column.
+- 移除發票設定 API（`Client#get_invoice_settings!`、`API::InvoiceSettings`）與發票的 `invoice_setting_id` 欄位。
 
 ## [0.2.4] - 2019-07-31
 
 ### Added
 
-- `Xdelivery::Callback` to verify XDelivery's callback `check_code`.
+- 新增 `Xdelivery::Callback`，用來驗證 XDelivery callback 的 `check_code`。
 
 ## [0.2.3] - 2019-07-30
 
 ### Added
 
-- `merchant_note` (system note) order and sale column.
+- 訂單與銷貨新增 `merchant_note`（系統備註）欄位。
 
 ## [0.2.2] - 2019-07-18
 
 ### Added
 
-- `company_title` invoice column.
+- 發票新增 `company_title` 欄位。
 
 ## [0.2.1] - 2019-07-17
 
 ### Added
 
-- `invoice_setting_id` in the sales invoice params.
+- 銷貨的發票參數新增 `invoice_setting_id`。
 
 ## [0.2.0] - 2019-07-16
 
 ### Added
 
-- Invoice settings API (`Client#get_invoice_settings!`) and the `invoice_setting_id` invoice column (both removed again in 1.0.0).
+- 發票設定 API（`Client#get_invoice_settings!`）與發票的 `invoice_setting_id` 欄位（兩者在 1.0.0 又被移除）。
 
 ## [0.1.6] - 2019-06-21
 
 ### Fixed
 
-- Fix in the sales API.
+- 修正銷貨 API 的問題。
 
 ## [0.1.5] - 2019-06-20
 
 ### Added
 
-- Sales API (`Client#create_sales!`).
+- 銷貨 API（`Client#create_sales!`）。
 
 ## [0.1.4] - 2019-06-13
 
 ### Added
 
-- Invoice items (`items` invoice column).
+- 發票品項（發票的 `items` 欄位）。
 
 ## [0.1.3] - 2019-06-12
 
 ### Changed
 
-- Renamed the invoice type column.
+- 重新命名發票類型欄位。
 
 ## [0.1.2] - 2019-06-12
 
 ### Added
 
-- Invoice support for orders.
+- 訂單支援開立發票。
 
 ## [0.1.1] - 2018-12-21
 
 ### Added
 
-- Product update API (`Client#update_products!`).
+- 商品更新 API（`Client#update_products!`）。
 
 ## [0.1.0] - 2018-11-16
 
 ### Added
 
-- Initial release.
+- 首次發佈。
 
 [Unreleased]: https://github.com/superlanding/xdelivery-ruby/compare/v2.1.0...HEAD
 [2.1.0]: https://github.com/superlanding/xdelivery-ruby/releases/tag/v2.1.0
